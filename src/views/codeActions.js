@@ -63,8 +63,6 @@ export const handleAddCode = (code,setCodes,callback,theOffsetActiveCode,thePage
             callback()
             if(theOffsetActiveCode || thePageLimitActiveCode){
                 setCurrentActiveCodes(codes.slice(theOffsetActiveCode, theOffsetActiveCode + thePageLimitActiveCode))
-            }else{
-                setCurrentActiveCodes([...codes])
             }
         })
     })
@@ -73,7 +71,8 @@ export const handleAddCode = (code,setCodes,callback,theOffsetActiveCode,thePage
     });
 }
 
-export const handleAddCodes = (code,setCodes,callback,theOffsetActiveCode,thePageLimitActiveCode,setCurrentActiveCodes) => {
+export const handleAddCodes = (code,setCodes,callback,theOffsetActiveCode,thePageLimitActiveCode,setCurrentActiveCodes,setLoading) => {
+    setLoading(true)
     const length = Number(code.lengthCode) 
     let cryptoCode = null;
     // console.log(code.products)
@@ -135,10 +134,10 @@ export const handleAddCodes = (code,setCodes,callback,theOffsetActiveCode,thePag
                 callback()
                 if(theOffsetActiveCode || thePageLimitActiveCode){
                     setCurrentActiveCodes(snapshot.docs.slice(theOffsetActiveCode, theOffsetActiveCode + thePageLimitActiveCode))
-                }else{
-                    setCurrentActiveCodes([...snapshot.docs])
                 }
             })
+        }).then(() => {
+            setLoading(false)
         })
         .catch((error) => {
             console.error("Error writing document: ", error);

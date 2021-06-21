@@ -210,7 +210,7 @@ export default function UserPortal() {
                 <p><strong>Times App Launched Purchased : </strong>{app.timesAppLaunchedPurchased}</p> */}
                 <div>{app.active ? <p><i className="icon-ok-sign"></i> Active</p> : <p><i className="icon-remove"></i> Not Active</p>}</div>
                 {/* <div><Button variant="secondary"><a href={app.purchased ? app.activeUrl : app.inActiveUrl}>{!app.purchased ? "Purchase" : "Instruction"}</a></Button></div> */}
-                <div>{app.purchased ? <Button variant="secondary"><a href={"https://"+app.activeUrl}>Instruction</a></Button>: null}</div>
+                <div>{app.purchased ? <Button variant="secondary"><a href={"https://"+app.activeUrl}>Instruction</a></Button>: <Button variant="secondary"><a href={"https://"+app.inActiveUrl}>Instruction</a></Button>}</div>
             </div></Col>
           })}
         </Row>
@@ -221,7 +221,7 @@ export default function UserPortal() {
                   <h6 style={{marginLeft: 10, marginTop: 10}}>{feature.name}</h6>
                 </div>
                 <div>{feature.active ? <p><i className="icon-ok-sign"></i> Active</p> : <p><i className="icon-remove"></i> Not Active</p>}</div>
-                {/* <div><Button variant="secondary"><a href={feature.purchased ? feature.activeUrl : feature.inActiveUrl}>{!feature.purchased ? "Purchase" : "Instruction"}</a></Button></div> */}
+                <div><Button variant="secondary"><a href={feature.purchased ? "https://"+feature.activeUrl: "https://"+feature.inActiveUrl}>{!feature.purchased ? "Purchase" : "Instruction"}</a></Button></div>
                 <div>{feature.purchased ? <Button variant="secondary"><a href={"https://"+feature.activeUrl}>Instruction</a></Button>:null}</div>
             </div></Col>
           })}

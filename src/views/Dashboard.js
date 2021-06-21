@@ -1,5 +1,4 @@
 import React, {useRef,useEffect,useState } from "react";
-import ChartistGraph from "react-chartist";
 // react-bootstrap components
 import {
   Badge,
@@ -27,6 +26,7 @@ import {handleDeleteUser,handleDeleteUsers, handleUpdateUser} from './UsersActio
 import { useAuth } from "../components/contexts/AuthContext"
 import Pagination from '../components/pagination'
 import PlacehoderImg from '../assets/placeholder.svg'
+import Loading from '../assets/img/Spin-1s-200px.gif'
 
 
 
@@ -84,7 +84,7 @@ function Dashboard() {
     e.preventDefault();
     const ac = new AbortController();
     setError("");
-    setLoading(true);
+    // setLoading(true);
     await signup(emailRef.current.value, passwordRef.current.value)
     .then(function(cred){
       db.collection("products").get().then(snapshot=>{
@@ -170,10 +170,9 @@ function Dashboard() {
           users.push(user);
         })
         setUsers([...users]);
+        // setPageNum(pageNum)
         if(theOffset || thePageLimit){
           setCurrentUsers(users.slice(theOffset, theOffset + thePageLimit))
-        }else{
-          setCurrentUsers([...users])
         }
         return {signal: ac.signal} 
       })
@@ -185,7 +184,7 @@ function Dashboard() {
       setError("Failed to create an account");
       return {signal: ac.signal} 
     })
-    setLoading(false);
+    // setLoading(false);
     return () => ac.abort(); 
   }
  
@@ -369,11 +368,12 @@ function Dashboard() {
   }
 
   const addNewAccountPopup = (firstNameRefs, lastNameRefs,emailRefs, passwordRefs) => {
+    setError(null)
     // console.log("refs",firstNameRef, lastNameRef,emailRef, passwordRef)
     firstNameRef.current.value = " "
     lastNameRef.current.value = " "
     emailRef.current.value = " "
-    passwordRef.current.value = " "
+    passwordRef.current.value = null
     setModalAddAccountShow(true);
     // console.log("refs",firstNameRef, lastNameRef,emailRef, passwordRef)
 
@@ -512,6 +512,17 @@ function Dashboard() {
     setModalShow(false)
   }
   
+
+  const LoadingSection = () => (
+    <div className="loadingPage">
+      <img src={Loading}/>
+    </div>
+  )
+ 
+  if(loading){
+    return <LoadingSection/>
+  }
+
   const totalUsers = users.length;
 
   // Render all users
@@ -593,7 +604,7 @@ function Dashboard() {
           <Button variant="secondary" onClick={() => setShowDeleteAlert(false)}>
             No
           </Button>
-          <Button variant="primary" onClick={()=>handleDeleteUser(deleteUserId,users,deleteUser,setUsers, closeEditPop,theOffset,thePageLimit,setCurrentUsers)}>
+          <Button variant="primary" onClick={()=>handleDeleteUser(deleteUserId,users,deleteUser,setUsers, closeEditPop,theOffset,thePageLimit,setCurrentUsers,setLoading)}>
             Yes
           </Button>
         </Modal.Footer>
@@ -608,8 +619,15 @@ function Dashboard() {
   
   let renderPageUser = null ;
   renderPageUser = currentUsers.length > 0 ? currentUsers.map((currentUser, i) =>  {
-    
+    // console.log(currentUsers.length , pageNum)
+    if(!currentUsers.length){
+      return;
+    }
+    if(i == pageNum){
+      return ;
+    }
   if(currentUser.data().email.includes(searchedVal)){
+    // if(i < pageNum){
     return (<tr key={currentUser.id}>
     <td>
       <Form.Check className="mb-1 pl-0">
@@ -675,13 +693,14 @@ function Dashboard() {
         <Button variant="secondary" onClick={() => setShowDeleteAlert(false)}>
           No
         </Button>
-        <Button variant="primary" onClick={()=>handleDeleteUser(deleteUserId,users,deleteUser,setUsers, closeEditPop,theOffset,thePageLimit,setCurrentUsers)}>
+        <Button variant="primary" onClick={()=>handleDeleteUser(deleteUserId,users,deleteUser,setUsers, closeEditPop,theOffset,thePageLimit,setCurrentUsers,setLoading)}>
           Yes
         </Button>
       </Modal.Footer>
     </Modal>
     </td>
     </tr>)
+    // }
   }
     }) : null
 
@@ -769,7 +788,7 @@ function Dashboard() {
                               <Button variant="secondary" onClick={() => setShowDeleteSelectedAlert(false)}>
                                 No
                               </Button>
-                              <Button variant="primary" onClick={()=> handleDeleteUsers(selectedUsers,setUsers, closeEditPop,theOffset,thePageLimit,setCurrentUsers) }>
+                              <Button variant="primary" onClick={()=> handleDeleteUsers(selectedUsers,setUsers, closeEditPop,theOffset,thePageLimit,setCurrentUsers,setLoading) }>
                                 Yes
                               </Button>
                             </Modal.Footer>
@@ -968,7 +987,7 @@ function Dashboard() {
                               <Button variant="secondary" onClick={() => setShowDeleteSelectedAlert(false)}>
                                 No
                               </Button>
-                              <Button variant="primary" onClick={()=> handleDeleteUsers(selectedUsers,setUsers, closeEditPop,theOffset,thePageLimit,setCurrentUsers) }>
+                              <Button variant="primary" onClick={()=> handleDeleteUsers(selectedUsers,setUsers, closeEditPop,theOffset,thePageLimit,setCurrentUsers,setLoading) }>
                                 Yes
                               </Button>
                             </Modal.Footer>
@@ -1105,7 +1124,7 @@ function Dashboard() {
       <div className="d-flex flex-row py-4 align-items-center">
         <Pagination
           totalRecords={totalUsers}
-          pageLimit={10}
+          pageLimit={pageNum}
           pageNeighbours={1}
           onPageChanged={onPageChanged}
         />

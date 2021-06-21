@@ -1,0 +1,7 @@
+.resetPopup .show{
+    z-index: 9999 !important
+  }
+  .failedPopup .show{
+    z-index: 999 !important
+  }
+  

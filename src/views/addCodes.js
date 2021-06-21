@@ -29,9 +29,11 @@ import {handleAddCode,
         handleReactiveCode
       } from './codeActions'
 import Pagination from '../components/pagination'
+import Loading from '../assets/img/Spin-1s-200px.gif'
 
 function AddCodes() {
     const [showCodePopup, setShowCodePopup] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [showEditCodePopup, setShowEditCodePopup] = useState(false);
     const [products, setProducts] = useState([]);
     const [addingNewCode, setAddingNewCode] = useState({});
@@ -256,7 +258,7 @@ function AddCodes() {
         setShowCodePopup(false)
         setShowEditCodePopup(false)
         setshowInactiveCode(false)
-        setshowInactiveCode(false)
+        // setshowInactiveCode(false)
     }
     const handleAddingCodeprefix = (e) => {
         let newAddingCode = addingNewCode;
@@ -463,6 +465,16 @@ function AddCodes() {
       setCurrentInactiveCodes(currentInactiveCodes)
       setTotalInactivePages(totalPages)
     };
+
+    const LoadingSection = () => (
+      <div className="loadingPage">
+        <img src={Loading}/>
+      </div>
+    )
+   
+    if(loading){
+      return <LoadingSection/>
+    }
 
     const totalInactiveCodes = inactiveCodes.length;
     // if (totalInactiveCodes === 0) return null;
@@ -856,7 +868,7 @@ function AddCodes() {
       <div className="d-flex flex-row py-4 align-items-center">
         <Pagination
           totalRecords={totalActiveCodes}
-          pageLimit={10}
+          pageLimit={pageNum}
           pageNeighbours={1}
           onPageChanged={onPageChanged}
         />
@@ -932,7 +944,7 @@ function AddCodes() {
     <div className="d-flex flex-row py-4 align-items-center">
       <Pagination
         totalRecords={totalInactiveCodes}
-        pageLimit={10}
+        pageLimit={pageNum}
         pageNeighbours={1}
         onPageChanged={onPageChangedInactive}
       />
@@ -1078,7 +1090,7 @@ function AddCodes() {
                     className="btn-fill pull-right"
                     type="submit"
                     variant="info"
-                    onClick={() => handleAddCodes(addingNewCode, setCodes,closeAddPop,theOffsetActiveCode,thePageLimitActiveCode,setCurrentActiveCodes)}
+                    onClick={() => handleAddCodes(addingNewCode, setCodes,setShowCodePopup,theOffsetActiveCode,thePageLimitActiveCode,setCurrentActiveCodes, setLoading)}
                   >
                     Add Codes
                   </Button>

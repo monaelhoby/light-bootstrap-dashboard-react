@@ -38,8 +38,9 @@ export const handleUpdateUser = (user,setUsers,theOffset,thePageLimit,setCurrent
     })
 }
 
-export const handleDeleteUser = (uid,users,i,setUsers,callback,theOffset,thePageLimit,setCurrentUsers)=>{
+export const handleDeleteUser = (uid,users,i,setUsers,callback,theOffset,thePageLimit,setCurrentUsers, setLoading)=>{
     // console.log("useActionI", i,uid)
+    setLoading(true)
     users.splice(i, 1);
     setUsers([...users]);
 
@@ -52,13 +53,16 @@ export const handleDeleteUser = (uid,users,i,setUsers,callback,theOffset,thePage
         }else{
             setCurrentUsers([...users])
         }
+    }).then(()=> {
+        setLoading(false)
     })
     .catch(err=>{
         console.log("Err is ", err)
     })
 }
 
-export const handleDeleteUsers = (ids,setUsers, callback,theOffset,thePageLimit,setCurrentUsers) =>{
+export const handleDeleteUsers = (ids,setUsers, callback,theOffset,thePageLimit,setCurrentUsers,setLoading) =>{
+    setLoading(true)
     let theUsers = [];
     return deleteUsers(ids)
     .then(res=>{
@@ -81,6 +85,8 @@ export const handleDeleteUsers = (ids,setUsers, callback,theOffset,thePageLimit,
               }
         })
         callback()
+    }).then(()=> {
+        setLoading(false)
     }).catch(err=>{
         console.log("ERR",err);
     })
